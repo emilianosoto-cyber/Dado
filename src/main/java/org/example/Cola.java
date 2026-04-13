@@ -1,102 +1,86 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
-
-//Cola simple
+// Cola doble
 public class Cola<T>{
-
-    //Frente de la cola (primer elemento en salir)
     private Nodo<T> frente;
-    //Final de la cola (último elemento en entrar)
-    private Nodo<T> final_;
-    //Número de elementos en la cola.
+    private Nodo<T> fin;
     private int tamanio;
+    public Cola(){}
 
-    //Inicializa una cola vacía.
-    public Cola(){
-        this.frente=null;
-        this.final_=null;
-        this.tamanio=0;
-    }
-
-    //Agrega un elemento al final
-    public void encolar(T elemento){
-        Nodo<T> nuevoNodo = new Nodo<>(elemento);
-
-        if (estaVacia()){
-            frente=nuevoNodo;
-            final_=nuevoNodo;
-        } else{
-            final_.siguiente=nuevoNodo;
-            final_=nuevoNodo;
+    // Inserta por el inicio
+    public void insertarInicio(T dato){
+        Nodo<T> n=new Nodo<>(dato);
+        if(tamanio==0){frente=fin=n;}
+        else{
+            n.setSiguiente(frente);
+            frente.setAnterior(n);
+            frente=n;
         }
         tamanio++;
     }
 
-    //Elimina y retorna (desencolar) el dato de frente de la cola
-    public T desencolar() {
-
-        if (estaVacia()) {
-            return null;
+    // Inserta por el final
+    public void insertarFinal(T dato){
+        Nodo<T> n=new Nodo<>(dato);
+        if(tamanio==0){frente=fin=n;}
+        else{
+            fin.setSiguiente(n);
+            n.setAnterior(fin);
+            fin=n;
         }
-        T dato=frente.dato;
-        frente =frente.siguiente;
+        tamanio++;
+    }
 
-        if (frente==null){
-            final_=null;
-        }
+    // Elimina por el inicio
+    public T eliminarInicio(){
+        if(tamanio==0) return null;
+        T d=frente.getDato();
+        frente=frente.getSiguiente();
         tamanio--;
-        return dato;
+        if(frente==null) fin=null;
+        else frente.setAnterior(null);
+        return d;
     }
 
-    //Retorna (sin REMOVER) el elemento del frente de la cola.
-    public T verFrente(){
-        if (estaVacia()) return null;
-        return frente.dato;
+    // Elimina por el final
+    public T eliminarFinal(){
+        if(tamanio==0) return null;
+        T d=fin.getDato();
+        fin=fin.getAnterior();
+        tamanio--;
+        if(fin==null) frente=null;
+        else fin.setSiguiente(null);
+        return d;
     }
 
-    //Indica si la cola está vacía.
-    public boolean estaVacia(){
-        return tamanio == 0;
+    // Mira el inicio sin eliminar
+    public T inicio(){
+        return frente==null?null:frente.getDato();
     }
 
-    //regresa el número de elementos en la cola.
-    public int tamanio() {
+    // Mira el final sin eliminar
+    public T finalCola(){
+        return fin==null?null:fin.getDato();
+    }
+
+    // Vacía la cola
+    public void limpiar(){
+        frente=null;
+        fin=null;tamanio=0;
+    }
+
+    // Regresa el tamaño
+    public int tamanio(){
         return tamanio;
     }
 
-    //Vacía la cola, eliminando todos los elementos.
-    public void limpiar() {
-        frente=null;
-        final_=null;
-        tamanio=0;
+    // True si está vacía
+    public boolean estaVacia(){
+        return tamanio==0;
     }
 
-    //Retorna una lista sin modificar la cola para la GUI.
-    public List<T> aLista(){
-        List<T> lista=new ArrayList<>();
-        Nodo<T> actual=frente;
-
-        while (actual != null) {
-            lista.add(actual.dato);
-            actual=actual.siguiente;
-        }
-        return lista;
-    }
-
-    // Es la representación en texto de la cola (frente → final).
-    @Override
-    public String toString(){
-        StringBuilder sb = new StringBuilder("[");
-        Nodo<T> actual = frente;
-
-        while (actual != null){
-            sb.append(actual.dato);
-            if (actual.siguiente != null) sb.append(", ");
-            actual = actual.siguiente;
-        }
-        sb.append("]");
-        return sb.toString();
+    // Alias para tu Estacion (no rompe tu código)
+    public void agregarFinal(T dato){
+        insertarFinal(dato);
     }
 }
